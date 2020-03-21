@@ -74,7 +74,7 @@ namespace HttpClientSession
 
 
         /// <summary>
-        /// 对参数编成URL的形式
+        /// 对参数编成IEnumerable<KeyValuePair<string, string>>
         /// </summary>
         /// <param name="param"></param>
         /// <param name="encoding"></param>
