@@ -115,7 +115,7 @@ namespace HttpClientSession
             var httpmessage = new HttpRequestMessage(requestParam.HttpMethod, url);
             RequstsHelper.UpdateRequestHeader(httpmessage.Headers, requestParam.Headers);
             CreateCookieHeader(httpmessage.Headers, requestParam.UserCookie);
-            httpmessage.Content = requestParam.PostData;
+            httpmessage.Content = requestParam.HttpContent;
             requestParam.UserHander?.Invoke(httpmessage);
             return httpmessage;
         }

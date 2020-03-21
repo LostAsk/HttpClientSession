@@ -17,7 +17,7 @@ namespace HttpClientSession
         public Dictionary<string, string> Headers { get; set; }
         public IEnumerable<KeyValuePair<string,string>> Params { get; set; }
 
-        public HttpContent PostData { get; set; }
+        public HttpContent HttpContent { get; set; }
 
         public Dictionary<String, String> UserCookie { get; set; }
 
