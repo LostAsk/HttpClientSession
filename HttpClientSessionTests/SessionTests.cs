@@ -28,16 +28,15 @@ namespace HttpClientSession.Tests
                 
                 }
             };
+            
             using (var s = new Session()) {
                 s.CookieContainerUpdate(c);
                 var res = await s.Send(p);
                 await res.SaveContentAsync(@"C:\Users\Administrator\Desktop\mm.html");
-
-
                 var tt = 1;
 
             }
-                
+            
         }
     }
 }
