@@ -26,7 +26,7 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task CopyToAsync(CancellationToken cancellationToken = default) {
+        public async ValueTask CopyToAsync(CancellationToken cancellationToken = default) {
             await HttpResponseMessage.Content.CopyToAsync(Memory);
             Memory.Position = 0;
         }
@@ -37,7 +37,7 @@ namespace HttpClientSession
         /// <param name="path"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task SaveContentAsync(String path, CancellationToken cancellationToken=default)
+        public async ValueTask SaveContentAsync(String path, CancellationToken cancellationToken=default)
         {
             
             using (FileStream fs = new FileStream(path, FileMode.Create))
@@ -55,7 +55,7 @@ namespace HttpClientSession
         /// <param name="encoding"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> ReadAsStringAsync(Encoding encoding=null, CancellationToken cancellationToken=default)
+        public async ValueTask<string> ReadAsStringAsync(Encoding encoding=null, CancellationToken cancellationToken=default)
         {
             var ResponseByte = await ReadAsByteAsync(cancellationToken);
             if (encoding == null)
@@ -74,7 +74,7 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default) {
+        public async ValueTask<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default) {
             return await HttpResponseMessageExtension.CopyToByteAsync(Memory, cancellationToken);
 
         }

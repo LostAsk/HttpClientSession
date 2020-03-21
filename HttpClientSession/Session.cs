@@ -90,7 +90,7 @@ namespace HttpClientSession
             return await Send(requestParam, new CancellationToken());
         }
 
-        public async Task<HttpStreamInfo> Send(RequestParam requestParam,CancellationToken cancellationToken)
+        public async ValueTask<HttpStreamInfo> Send(RequestParam requestParam,CancellationToken cancellationToken)
         {
             using (var httpmessage = GetHttpRequestMessage(requestParam)) {
                 using (var res = await HttpClient.SendAsync(httpmessage, requestParam.HttpCompletionOption, cancellationToken)) 
