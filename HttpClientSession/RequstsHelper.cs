@@ -27,7 +27,6 @@ namespace HttpClientSession
             }
             encodpar = String.Join("&", pars);
             return encodpar;
-
         }
 
         /// <summary>
@@ -48,6 +47,7 @@ namespace HttpClientSession
             if (String.IsNullOrWhiteSpace(uri.Query)) { Url = url + "?" + RequstsHelper.EncodeParams(param, encoding); return Url; }
             else { Url = url + "&" + RequstsHelper.EncodeParams(param, encoding); return Url; }
         }
+
 
         /// <summary>
         /// 更新头信息
@@ -72,6 +72,26 @@ namespace HttpClientSession
             httpClientHandler.ServerCertificateCustomValidationCallback = (reqmessage, x509cert, x509chain, sslp) => true;
         }
 
+        /// <summary>
+        /// Url预处理
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="param"></param>
+        /// <param name="encoding"></param>
+        public static string PrepareUrl(string url, Dictionary<string, object> param, Encoding encoding = null)
+        {
+            var Url = string.Empty;
+            if (!(url.Contains("http://") || url.Contains("https://")))
+            {
+                url = "http://" + url;
+            }
+            if (param == null) { Url = url; return Url; }
+            var uri = new Uri(url);
+            var i = string.Join("&", DicToEnumerableKeyPair(param, encoding).Select(x => x.Key + "=" + x.Value));
+            if (String.IsNullOrWhiteSpace(uri.Query)) { Url = url + "?" + i; return Url; }
+            else { Url = url + "&" + i; return Url; }
+
+        }
 
         /// <summary>
         /// 对参数编成IEnumerable<KeyValuePair<string, string>>
@@ -79,17 +99,17 @@ namespace HttpClientSession
         /// <param name="param"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static IEnumerable<KeyValuePair<string, string>> DicToIemableKeyPair(Dictionary<string, Object> param, Encoding encoding)
+        public static IEnumerable<KeyValuePair<string, string>> DicToEnumerableKeyPair(Dictionary<string, Object> param, Encoding encoding=null)
         {
             var encodpar = string.Empty;
             if (param == null) { throw new Exception("param不能为空"); }
             var encode = encoding ?? Encoding.UTF8;
             List<KeyValuePair<String, string>> pars = new List<KeyValuePair<String, string>>();
-            foreach (KeyValuePair<String, dynamic> par in param)
+            foreach (KeyValuePair<String, Object> par in param)
             {
                 if (par.Value.GetType().IsValueType || par.Value.GetType() == typeof(String))
                 {
-                    pars.Add(new KeyValuePair<string, string>(System.Web.HttpUtility.UrlEncode(par.Key, encode), System.Web.HttpUtility.UrlEncode(par.Value, encode)));
+                    pars.Add(new KeyValuePair<string, string>(System.Web.HttpUtility.UrlEncode(par.Key, encode), System.Web.HttpUtility.UrlEncode(par.Value.ToString(), encode)));
                 }
                 else if (typeof(IEnumerable<string>).IsAssignableFrom(par.Value.GetType()))
                 {
@@ -108,5 +128,67 @@ namespace HttpClientSession
             return pars;
 
         }
+        /// <summary>
+        /// 参数字典+文件流转Btye[] post参数
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="files"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static byte[] DicToMsMultiPartFormDataBytes(Dictionary<string, object> param, out string contenttype,List<UploadFile> files, Encoding encoding=null) {
+            var multipar = new MsMultiPartFormData(encoding);
+            foreach (var i in param) {
+                multipar.AddFormField(i.Key, i.Value.ToString());
+            }
+
+            if(files!=null)
+            foreach (var i in files) {
+                multipar.AddFile(i.FieldName, i.FileName, i.Stream, i.ContentType);
+            }
+            multipar.PrepareFormData();
+            contenttype = String.Format("multipart/form-data; boundary={0}", multipar.Boundary); 
+            return multipar.GetFormData().ToArray();
+        }
+
+
+
+    }
+
+
+
+
+
+
+    /// <summary>
+    /// 常用请求ContentType
+    /// </summary>
+    public static class ContentType {
+        public static readonly string Json = "application/json";
+
+        public static readonly string FormUrlencoded = "application/x-www-form-urlencoded";
+
+        public static readonly string Text = "text/plain";
+
+        public static readonly string Html = "text/html";
+
+        public static readonly string Javascript = "application/javascript";
+
+        public static readonly string Xml = "application/xml";
+
+        public static readonly string MultipartFormData = "multipart/form-data";
+        public static  MediaTypeHeaderValue CreateJson() => new MediaTypeHeaderValue(Json);
+
+        public static  MediaTypeHeaderValue CreateFormUrlencoded() => new MediaTypeHeaderValue(FormUrlencoded);
+
+        public static  MediaTypeHeaderValue CreateText() => new MediaTypeHeaderValue(Text);
+
+        public static  MediaTypeHeaderValue CreateHtml() => new MediaTypeHeaderValue(Html);
+
+        public static  MediaTypeHeaderValue CreateJavascript() => new MediaTypeHeaderValue(Javascript);
+
+        public static  MediaTypeHeaderValue CreateXml() => new MediaTypeHeaderValue(Xml);
+
+        public static MediaTypeHeaderValue CreateMultipartFormData()=> new MediaTypeHeaderValue(MultipartFormData);
+
     }
 }

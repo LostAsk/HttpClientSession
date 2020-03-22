@@ -93,12 +93,14 @@ namespace HttpClientSession
         public async Task<HttpStreamInfo> Send(RequestParam requestParam,CancellationToken cancellationToken)
         {
             using (var httpmessage = GetHttpRequestMessage(requestParam)) {
+        
                 using (var res = await HttpClient.SendAsync(httpmessage, requestParam.HttpCompletionOption, cancellationToken)) 
                 {
                     var rescookie = CookieHelper.GetCookieFromResponseHeader(res.Headers);
                     CookieHelper.MergeCookie(SessionCookieContainer, rescookie);
                     var streaminfo = new HttpStreamInfo(res);
                     await streaminfo.CopyToAsync(cancellationToken);
+
                     return streaminfo;
                 }
             };
@@ -115,10 +117,51 @@ namespace HttpClientSession
             var httpmessage = new HttpRequestMessage(requestParam.HttpMethod, url);
             RequstsHelper.UpdateRequestHeader(httpmessage.Headers, requestParam.Headers);
             CreateCookieHeader(httpmessage.Headers, requestParam.UserCookie);
-            httpmessage.Content = requestParam.HttpContent;
+            httpmessage.Content = CreateContent(requestParam);
             requestParam.UserHander?.Invoke(httpmessage);
             return httpmessage;
         }
+
+        /// <summary>
+        /// 创建HttpContent对象
+        /// </summary>
+        /// <param name="requestParam"></param>
+        /// <returns></returns>
+        private static HttpContent CreateContent(RequestParam requestParam) {
+            HttpContent http=null;
+            if (requestParam.HttpMethod == HttpMethod.Get || requestParam.HttpMethod == HttpMethod.Head) {
+                return http;
+            }
+            if (requestParam.SendData != null)
+            {
+                http = new ByteArrayContent(requestParam.SendData);
+                http.Headers.ContentType = requestParam.MediaTypeHeaderValue;
+                http.Headers.ContentType.CharSet = requestParam.Encoding.WebName;
+                return http;
+            }
+            if (requestParam.Json != null) {
+                http = new StringContent(requestParam.Json.ToString(), requestParam.Encoding);
+                http.Headers.ContentType = ContentType.CreateJson();
+                http.Headers.ContentType.CharSet = requestParam.Encoding.WebName;
+                return http;
+            }
+            if (requestParam.PostData != null && requestParam.Files == null) {
+                http = new FormUrlEncodedContent(RequstsHelper.DicToEnumerableKeyPair(requestParam.PostData, requestParam.Encoding));
+                http.Headers.ContentType = ContentType.CreateFormUrlencoded();
+                http.Headers.ContentType.CharSet = requestParam.Encoding.WebName;
+                return http;
+            }
+            if (requestParam.PostData != null && requestParam.Files != null) {
+                var type = string.Empty;
+                http = new ByteArrayContent(RequstsHelper.DicToMsMultiPartFormDataBytes(requestParam.PostData, out type, requestParam.Files, requestParam.Encoding));
+                http.Headers.Add("Content-Type", type);
+                //http.Headers.ContentType.CharSet = requestParam.Encoding.WebName;
+                return http;
+            }
+            return http;
+
+        }
+
 
         /// <summary>
         /// 合并头信息
