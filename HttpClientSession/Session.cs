@@ -98,7 +98,7 @@ namespace HttpClientSession
                 {
                     var rescookie = CookieHelper.GetCookieFromResponseHeader(res.Headers);
                     CookieHelper.MergeCookie(SessionCookieContainer, rescookie);
-                    var streaminfo = new HttpStreamInfo(res);
+                    var streaminfo = new HttpStreamInfo(res,requestParam);
                     await streaminfo.CopyToAsync(cancellationToken);
 
                     return streaminfo;

@@ -34,6 +34,7 @@ namespace HttpClientSession
         {
 
             var buffer = new byte[source.Length];
+
             await source.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
             return buffer;
         }

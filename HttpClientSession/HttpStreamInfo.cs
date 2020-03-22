@@ -8,42 +8,58 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.IO.Compression;
 namespace HttpClientSession
 {
 
     public class HttpStreamInfo : IDisposable
     {
-       public HttpResponseMessage HttpResponseMessage { get; }
+        public HttpResponseMessage HttpResponseMessage { get; }
 
-        private MemoryStream Memory { get; set; } = new MemoryStream();
-        public HttpStreamInfo(HttpResponseMessage httpResponseMessage) {
+        public RequestParam RequestParam { get; }
+
+        private byte[] ReceiveBytes { get; set; }
+        private MemoryStream Memory { get; set; }
+        public HttpStreamInfo(HttpResponseMessage httpResponseMessage, RequestParam request)
+        {
             HttpResponseMessage = httpResponseMessage;
-
-       }
+            RequestParam = request;
+        }
 
         /// <summary>
         /// 网络流转内存流
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask CopyToAsync(CancellationToken cancellationToken = default) {
-            await HttpResponseMessage.Content.CopyToAsync(Memory);
+        public async ValueTask CopyToAsync( CancellationToken cancellationToken = default)
+        {
+            //if (!IsGzip)
+            //{
+                await HttpResponseMessage.Content.CopyToAsync(Memory);
+            //}
+            //else
+            //{
+            //    var steam = new GZipStream(await HttpResponseMessage.Content.ReadAsStreamAsync(), CompressionMode.Decompress);
+            //    await HttpResponseMessageExtension.CopyToAsync(steam, Memory, cancellationToken);
+            //}
             Memory.Position = 0;
+            await ReadAsByteAsync(cancellationToken);
+            Memory.Dispose();
         }
-        
+
         /// <summary>
         /// 保存文件
         /// </summary>
         /// <param name="path"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask SaveContentAsync(String path, CancellationToken cancellationToken=default)
+        public async ValueTask SaveContentAsync(String path, CancellationToken cancellationToken = default)
         {
-            
+
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
-                await HttpResponseMessageExtension.CopyToAsync(Memory,fs, cancellationToken);
-
+                //await HttpResponseMessageExtension.CopyToAsync(Memory,fs, cancellationToken);
+                await fs.WriteAsync(ReceiveBytes, 0, ReceiveBytes.Length);
             }
         }
 
@@ -55,7 +71,7 @@ namespace HttpClientSession
         /// <param name="encoding"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<string> ReadAsStringAsync(Encoding encoding=null, CancellationToken cancellationToken=default)
+        public async ValueTask<string> ReadAsStringAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
         {
             var ResponseByte = await ReadAsByteAsync(cancellationToken);
             if (encoding == null)
@@ -74,8 +90,15 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default) {
-            return await HttpResponseMessageExtension.CopyToByteAsync(Memory, cancellationToken);
+        public async ValueTask<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default)
+        {
+            if (ReceiveBytes == null)
+            {
+                ReceiveBytes = await HttpResponseMessageExtension.CopyToByteAsync(Memory, cancellationToken);
+            }
+            return ReceiveBytes;
+
+
 
         }
 
@@ -89,7 +112,7 @@ namespace HttpClientSession
         {
             var CharacterSet = string.Empty;
             IEnumerable<string> ch;
-            var b=HttpResponseMessage.Headers.TryGetValues("charSet", out ch);
+            var b = HttpResponseMessage.Headers.TryGetValues("charSet", out ch);
             if (b) { CharacterSet = ch.ToArray()[0]; }
             Encoding encoding = null;
             if (httpResponseByte != null)
@@ -139,7 +162,8 @@ namespace HttpClientSession
 
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             HttpResponseMessage.Dispose();
             Memory.Dispose();
         }
