@@ -75,14 +75,7 @@ namespace HttpClientSession
         /// <summary>
         /// 发送参数
         /// </summary>
-        internal byte[] SendData { get; set; }
+        public byte[] SendData { get; set; }
 
-        /// <summary>
-        /// 发送自定义的Post参数
-        /// </summary>
-        /// <param name="send"></param>
-        public void UserSendData(byte[] send) {
-            SendData = send;
-        }
     }
 }
