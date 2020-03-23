@@ -19,7 +19,7 @@ namespace HttpClientSession
         public RequestParam RequestParam { get; }
 
         private byte[] ReceiveBytes { get; set; }
-        private MemoryStream Memory { get; set; } //= new MemoryStream();
+        private MemoryStream Memory { get; set; }
 
         private bool _disposed;
         public HttpStreamInfo(HttpResponseMessage httpResponseMessage, RequestParam request)
@@ -33,7 +33,7 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task CopyToAsync( CancellationToken cancellationToken = default)
+        public async Task CopyToAsync(CancellationToken cancellationToken = default)
         {
 
             //if (!IsGzip)
@@ -48,6 +48,7 @@ namespace HttpClientSession
             Memory = await HttpResponseMessage.Content.ReadAsStreamAsync() as MemoryStream;
             Memory.Position = 0;
             await ReadAsByteAsync(cancellationToken);
+  
         }
 
         /// <summary>
@@ -61,8 +62,9 @@ namespace HttpClientSession
 
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
-                //await HttpResponseMessageExtension.CopyToAsync(Memory,fs, cancellationToken);
+                //await HttpResponseMessageExtension.CopyToAsync(Memory, fs, cancellationToken);
                 await fs.WriteAsync(ReceiveBytes, 0, ReceiveBytes.Length);
+                fs.Flush();
             }
         }
 

@@ -15,7 +15,7 @@ namespace HttpClientSession
         public HttpClientHandler HttpClientHandler { get; }
 
         private Dictionary<string, string> SessionCookieContainer;
-        private HttpClient HttpClient { get; }
+        public HttpClient HttpClient { get; }
 
         public HttpRequestHeaders HttpRequestHeaders { get => HttpClient.DefaultRequestHeaders; }
 
@@ -56,7 +56,7 @@ namespace HttpClientSession
         }
 
         private void SetSessionCookieFromHttpClientHandler() {
-            SessionCookieContainer = CookieHelper.GetAllCookies(HttpClientHandler.CookieContainer);
+            SessionCookieContainer =  CookieHelper.GetAllCookies(HttpClientHandler.CookieContainer);
         }
 
 

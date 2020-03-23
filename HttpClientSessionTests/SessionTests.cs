@@ -13,6 +13,27 @@ namespace HttpClientSession.Tests
     public class SessionTests
     {
         [TestMethod()]
+        public async Task gbTest() {
+            var p = new RequestParam
+            {
+
+                Url = "http://www.gds.org.cn/CheckCodeImg.aspx",
+            };
+            using (var s = new Session()) {
+                s.HttpClientHandler.AllowAutoRedirect = true;
+                s.HttpClient.BaseAddress = new Uri("http://www.gds.org.cn/");
+                //s.HttpClientHandler.AutomaticDecompression = System.Net.DecompressionMethods.GZip;
+                using (var r =await s.Send(p)) {
+                    await r.SaveContentAsync(@"C:\Users\Administrator\Desktop\ll.jpg");
+                    var tt = 1;
+                }
+            
+            }
+        }
+
+
+
+        [TestMethod()]
         public async Task PostFormUrlencodedTest()
         {
             var p = new RequestParam

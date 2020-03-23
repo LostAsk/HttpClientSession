@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>HttpClientEx</Authors>
     <PackageId>HttpClientEx</PackageId>
     <Product>HttpClientEx</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>修复bug</Description>
+    <Description>修复bug,httpclient下载储存</Description>
   </PropertyGroup>
 
   <ItemGroup>
