@@ -19,7 +19,9 @@ namespace HttpClientSession
         public RequestParam RequestParam { get; }
 
         private byte[] ReceiveBytes { get; set; }
-        private MemoryStream Memory { get; set; }
+        private MemoryStream Memory { get; set; } = new MemoryStream();
+
+        private bool _disposed;
         public HttpStreamInfo(HttpResponseMessage httpResponseMessage, RequestParam request)
         {
             HttpResponseMessage = httpResponseMessage;
@@ -31,7 +33,7 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask CopyToAsync( CancellationToken cancellationToken = default)
+        public async Task CopyToAsync( CancellationToken cancellationToken = default)
         {
             //if (!IsGzip)
             //{
@@ -44,7 +46,6 @@ namespace HttpClientSession
             //}
             Memory.Position = 0;
             await ReadAsByteAsync(cancellationToken);
-            Memory.Dispose();
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace HttpClientSession
         /// <param name="path"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask SaveContentAsync(String path, CancellationToken cancellationToken = default)
+        public async Task SaveContentAsync(String path, CancellationToken cancellationToken = default)
         {
 
             using (FileStream fs = new FileStream(path, FileMode.Create))
@@ -71,7 +72,7 @@ namespace HttpClientSession
         /// <param name="encoding"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<string> ReadAsStringAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
+        public async Task<string> ReadAsStringAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
         {
             var ResponseByte = await ReadAsByteAsync(cancellationToken);
             if (encoding == null)
@@ -90,7 +91,7 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default)
+        public async Task<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default)
         {
             if (ReceiveBytes == null)
             {
@@ -162,10 +163,28 @@ namespace HttpClientSession
 
         }
 
-        public void Dispose()
+
+        private void Dispose(bool disposing)
         {
+            if (_disposed) return; //如果已经被回收，就中断执行
+            if (disposing)
+            {
+                //TODO:释放本对象中管理的托管资源
+            }
             HttpResponseMessage.Dispose();
             Memory.Dispose();
+            //TODO:释放非托管资源
+            _disposed = true;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this); //标记gc不在调用析构函数
+        }
+
+        ~HttpStreamInfo()
+        {
+            Dispose(false);
         }
     }
 }
