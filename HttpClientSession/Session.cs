@@ -22,7 +22,8 @@ namespace HttpClientSession
 
         public Session()
         {
-            HttpClientHandler = new HttpClientHandler() { UseCookies = false, };
+            HttpClientHandler = new HttpClientHandler();
+            //{ UseCookies = false,CookieContainer=new CookieContainer() };
             HttpClient = new HttpClient(HttpClientHandler) { Timeout = TimeSpan.FromMinutes(60), };
             SetHttpClientHandler();
             SetSessionCookieFromHttpClientHandler();
@@ -31,7 +32,7 @@ namespace HttpClientSession
 
         public Session(HttpClientHandler httpClientHandler) {
             HttpClientHandler = httpClientHandler;
-            HttpClientHandler.UseCookies = false;
+            //HttpClientHandler.UseCookies = false;
             HttpClient = new HttpClient(HttpClientHandler);
             DefaultReqInit();
             SetSessionCookieFromHttpClientHandler();
@@ -41,7 +42,7 @@ namespace HttpClientSession
         public Session(HttpClient httpClient, HttpClientHandler httpClientHandler) {
             HttpClient = httpClient;
             HttpClientHandler = httpClientHandler;
-            HttpClientHandler.UseCookies = false;
+            //HttpClientHandler.UseCookies = false;
             SetSessionCookieFromHttpClientHandler();
         }
 
@@ -51,7 +52,7 @@ namespace HttpClientSession
         /// <param name="Req"></param>
         private void DefaultReqInit()
         {
-            HttpRequestHeaders.Add("Accept", "*/*");
+            //HttpRequestHeaders.Add("Accept", "*/*");
             HttpRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36");
         }
 
@@ -203,15 +204,15 @@ namespace HttpClientSession
             if (tmpheadersdic == null)
             {
                 value = string.Join(";", tmpcookedic.Select(x => x.Key + "=" + x.Value));
-                tmpheaders.Add("cookie", value);
             }
             else {
                 foreach (var c in tmpcookedic) {
                     tmpheadersdic[c.Key] = c.Value;
                 }
                 value = string.Join(";", tmpheadersdic.Select(x => x.Key + "=" + x.Value));
-                tmpheaders.Add("cookie", value);
+                
             }
+            if(!string.IsNullOrWhiteSpace("cookie")) tmpheaders.Add("cookie", value);
             return value;
         }
 

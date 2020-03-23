@@ -20,12 +20,42 @@ namespace HttpClientSession.Tests
                 Url = "http://www.gds.org.cn/CheckCodeImg.aspx",
             };
             using (var s = new Session()) {
-                s.HttpClientHandler.AllowAutoRedirect = true;
-                s.HttpClient.BaseAddress = new Uri("http://www.gds.org.cn/");
-                //s.HttpClientHandler.AutomaticDecompression = System.Net.DecompressionMethods.GZip;
+                //s.HttpClientHandler.AllowAutoRedirect = true;
+                //s.HttpClientHandler.Proxy = null;
+                ////s.HttpClientHandler.AutomaticDecompression = System.Net.DecompressionMethods.None;
+                //s.HttpClientHandler.AutomaticDecompression = System.Net.DecompressionMethods.Deflate;
+                //s.HeadersUpdate(new Dictionary<string, string>()
+                //{
+                //    ["Cache-Control"] = "max-age=0",
+                //    ["Proxy-Connection"] = "keep-alive",
+                //    ["Accept-Encoding"] = "gzip, deflate",
+                //    ["Host"] = "www.gds.org.cn",
+                //    ["Upgrade-Insecure-Requests"] = "1",
+                //    ["Cookie"]= "app_id=0; COLLCK=2652728511; ASP.NET_SessionId=oedbona1bzph5w5mnk0jllhx",
+                //}) ;
                 using (var r =await s.Send(p)) {
                     await r.SaveContentAsync(@"C:\Users\Administrator\Desktop\ll.jpg");
                     var tt = 1;
+                }
+            
+            }
+
+
+            using (var h = new HttpClient()) {
+                using (var r = await h.GetAsync("http://www.gds.org.cn/CheckCodeImg.aspx")) {
+                    using (FileStream fs = new FileStream(@"C:\Users\Administrator\Desktop\ll222.jpg", FileMode.Create))
+                    {
+                        using (var me = new MemoryStream()) {
+                            await r.Content.CopyToAsync(me);
+                            me.Position = 0;
+                            await me.CopyToAsync(fs);
+                        }
+
+                            
+                        //await fs.WriteAsync(ReceiveBytes, 0, ReceiveBytes.Length);
+                        fs.Flush();
+                    }
+
                 }
             
             }

@@ -47,8 +47,12 @@ namespace HttpClientSession
             //}
             Memory = await HttpResponseMessage.Content.ReadAsStreamAsync() as MemoryStream;
             Memory.Position = 0;
-            await ReadAsByteAsync(cancellationToken);
-  
+            ReceiveBytes = await ReadAsByteAsync(cancellationToken);
+       
+      
+
+            //await ReadAsByteAsync(cancellationToken);
+
         }
 
         /// <summary>
@@ -64,7 +68,7 @@ namespace HttpClientSession
             {
                 //await HttpResponseMessageExtension.CopyToAsync(Memory, fs, cancellationToken);
                 await fs.WriteAsync(ReceiveBytes, 0, ReceiveBytes.Length);
-                fs.Flush();
+                await fs.FlushAsync();
             }
         }
 
@@ -76,7 +80,7 @@ namespace HttpClientSession
         /// <param name="encoding"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<string> ReadAsStringAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
+        public async ValueTask<string> ReadAsStringAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
         {
             var ResponseByte = await ReadAsByteAsync(cancellationToken);
             if (encoding == null)
@@ -95,12 +99,13 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default)
         {
             if (ReceiveBytes == null)
             {
                 ReceiveBytes = await HttpResponseMessageExtension.CopyToByteAsync(Memory, cancellationToken);
             }
+            //await Task.Yield();
             return ReceiveBytes;
 
 
@@ -176,7 +181,7 @@ namespace HttpClientSession
                 //TODO:释放本对象中管理的托管资源
             }
             HttpResponseMessage.Dispose();
-            Memory.Dispose();
+            //Memory.Dispose();
             //TODO:释放非托管资源
             _disposed = true;
         }
