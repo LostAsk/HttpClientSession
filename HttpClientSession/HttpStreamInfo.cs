@@ -20,6 +20,8 @@ namespace HttpClientSession
 
         private byte[] ReceiveBytes { get; set; }
         private MemoryStream Memory { get; set; }
+
+        private bool _disposed;
         public HttpStreamInfo(HttpResponseMessage httpResponseMessage, RequestParam request)
         {
             HttpResponseMessage = httpResponseMessage;
@@ -31,20 +33,22 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask CopyToAsync( CancellationToken cancellationToken = default)
+        public async Task CopyToAsync(CancellationToken cancellationToken = default)
         {
+
             //if (!IsGzip)
             //{
-                await HttpResponseMessage.Content.CopyToAsync(Memory);
+            //await HttpResponseMessage.Content.CopyToAsync(Memory);
             //}
             //else
             //{
             //    var steam = new GZipStream(await HttpResponseMessage.Content.ReadAsStreamAsync(), CompressionMode.Decompress);
             //    await HttpResponseMessageExtension.CopyToAsync(steam, Memory, cancellationToken);
             //}
+            Memory = await HttpResponseMessage.Content.ReadAsStreamAsync() as MemoryStream;
             Memory.Position = 0;
             await ReadAsByteAsync(cancellationToken);
-            Memory.Dispose();
+  
         }
 
         /// <summary>
@@ -53,13 +57,14 @@ namespace HttpClientSession
         /// <param name="path"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask SaveContentAsync(String path, CancellationToken cancellationToken = default)
+        public async Task SaveContentAsync(String path, CancellationToken cancellationToken = default)
         {
 
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
-                //await HttpResponseMessageExtension.CopyToAsync(Memory,fs, cancellationToken);
+                //await HttpResponseMessageExtension.CopyToAsync(Memory, fs, cancellationToken);
                 await fs.WriteAsync(ReceiveBytes, 0, ReceiveBytes.Length);
+                fs.Flush();
             }
         }
 
@@ -71,7 +76,7 @@ namespace HttpClientSession
         /// <param name="encoding"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<string> ReadAsStringAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
+        public async Task<string> ReadAsStringAsync(Encoding encoding = null, CancellationToken cancellationToken = default)
         {
             var ResponseByte = await ReadAsByteAsync(cancellationToken);
             if (encoding == null)
@@ -90,7 +95,7 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default)
+        public async Task<byte[]> ReadAsByteAsync(CancellationToken cancellationToken = default)
         {
             if (ReceiveBytes == null)
             {
@@ -162,10 +167,28 @@ namespace HttpClientSession
 
         }
 
-        public void Dispose()
+
+        private void Dispose(bool disposing)
         {
+            if (_disposed) return; //如果已经被回收，就中断执行
+            if (disposing)
+            {
+                //TODO:释放本对象中管理的托管资源
+            }
             HttpResponseMessage.Dispose();
             Memory.Dispose();
+            //TODO:释放非托管资源
+            _disposed = true;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this); //标记gc不在调用析构函数
+        }
+
+        ~HttpStreamInfo()
+        {
+            Dispose(false);
         }
     }
 }
