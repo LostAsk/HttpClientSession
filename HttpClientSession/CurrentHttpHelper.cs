@@ -37,7 +37,7 @@ namespace HttpClientSession
             {
                 try
                 {
-                    using (var r =await s.Send(x, cancellationToken))
+                    using (var r =await s.SendAsync(x, cancellationToken))
                     {
                         if (CheckFunc(r))
                         {
@@ -72,7 +72,7 @@ namespace HttpClientSession
                         {
                             try
                             {
-                                using (var r = await s.Send(item))
+                                using (var r = await s.SendAsync(item))
                                 {
                                     if (CheckFunc(r))
                                     {

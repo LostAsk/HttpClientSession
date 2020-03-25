@@ -87,11 +87,11 @@ namespace HttpClientSession
             return CookieHelper.GetCookieString(SessionCookieContainer);
         }
 
-        public async Task<HttpStreamInfo> Send(RequestParam requestParam) {
-            return await Send(requestParam, new CancellationToken());
+        public async Task<HttpStreamInfo> SendAsync(RequestParam requestParam) {
+            return await SendAsync(requestParam, new CancellationToken());
         }
 
-        public async Task<HttpStreamInfo> Send(RequestParam requestParam,CancellationToken cancellationToken)
+        public async Task<HttpStreamInfo> SendAsync(RequestParam requestParam,CancellationToken cancellationToken)
         {
             using (var httpmessage = GetHttpRequestMessage(requestParam)) {
         
@@ -147,7 +147,7 @@ namespace HttpClientSession
                 return http;
             }
             if (requestParam.PostData != null && requestParam.Files == null) {
-                http = new FormUrlEncodedContent(RequstsHelper.DicToEnumerableKeyPair(requestParam.PostData, requestParam.Encoding));
+                http = new FormUrlEncodedContent(RequstsHelper.DicToEnumerableKeyPair(requestParam.PostData));
                 http.Headers.ContentType = ContentType.CreateFormUrlencoded();
                 http.Headers.ContentType.CharSet = requestParam.Encoding.WebName;
                 return http;

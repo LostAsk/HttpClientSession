@@ -87,7 +87,7 @@ namespace HttpClientSession
             }
             if (param == null) { Url = url; return Url; }
             var uri = new Uri(url);
-            var i = string.Join("&", DicToEnumerableKeyPair(param, encoding).Select(x => x.Key + "=" + x.Value));
+            var i = string.Join("&", DicToEnumerableKeyPairEncode(param, encoding).Select(x => x.Key + "=" + x.Value));
             if (String.IsNullOrWhiteSpace(uri.Query)) { Url = url + "?" + i; return Url; }
             else { Url = url + "&" + i; return Url; }
 
@@ -99,7 +99,7 @@ namespace HttpClientSession
         /// <param name="param"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static IEnumerable<KeyValuePair<string, string>> DicToEnumerableKeyPair(Dictionary<string, Object> param, Encoding encoding=null)
+        public static IEnumerable<KeyValuePair<string, string>> DicToEnumerableKeyPairEncode(Dictionary<string, Object> param, Encoding encoding=null)
         {
             var encodpar = string.Empty;
             if (param == null) { throw new Exception("param不能为空"); }
@@ -128,6 +128,40 @@ namespace HttpClientSession
             return pars;
 
         }
+        /// <summary>
+        /// 对参数编成IEnumerable<KeyValuePair<string, string>>
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public static IEnumerable<KeyValuePair<string, string>> DicToEnumerableKeyPair(Dictionary<string, Object> param)
+        {
+            var encodpar = string.Empty;
+            if (param == null) { throw new Exception("param不能为空"); }
+            List<KeyValuePair<String, string>> pars = new List<KeyValuePair<String, string>>();
+            foreach (KeyValuePair<String, Object> par in param)
+            {
+                if (par.Value.GetType().IsValueType || par.Value.GetType() == typeof(String))
+                {
+                    pars.Add(new KeyValuePair<string, string>(par.Key, par.Value.ToString()));
+                }
+                else if (typeof(IEnumerable<string>).IsAssignableFrom(par.Value.GetType()))
+                {
+                    var tmp = (par.Value as IEnumerable<string>).Select(x =>
+                         new KeyValuePair<string, string>(par.Key, x)
+                    );
+                    pars.AddRange(tmp);
+                }
+                else
+                {
+                    throw new Exception("目前值只接受值String|IEnumerable<String>的字典");
+                }
+
+            }
+
+            return pars;
+
+        }
+
         /// <summary>
         /// 参数字典+文件流转Btye[] post参数
         /// </summary>

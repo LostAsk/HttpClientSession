@@ -22,6 +22,9 @@ namespace HttpClientSession
         private MemoryStream Memory { get; set; }
 
         private bool _disposed;
+        static HttpStreamInfo() {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
         public HttpStreamInfo(HttpResponseMessage httpResponseMessage, RequestParam request)
         {
             HttpResponseMessage = httpResponseMessage;
