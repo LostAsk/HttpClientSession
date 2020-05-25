@@ -17,23 +17,10 @@ namespace HttpClientSession.Tests
             var p = new RequestParam
             {
 
-                Url = "http://www.gds.org.cn/CheckCodeImg.aspx",
+                Url = "http://image.baidu.com/search/detail?z=0&word=%E6%91%84%E5%BD%B1%E5%B8%88%E8%8A%A6%E7%82%B3%E8%87%A3&hs=0&pn=4&spn=0&di=0&pi=1096592873828195119&tn=baiduimagedetail&is=0%2C0&ie=utf-8&oe=utf-8&cs=4144687355%2C1909913594&os=1391503792%2C725646909&simid=&adpicid=0&lpn=0&fm=&sme=&cg=&bdtype=-1&oriquery=&objurl=http%3A%2F%2Ft8.baidu.com%2Fit%2Fu%3D2247852322%2C986532796%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D853&fromurl=&gsm=50000000005&catename=pcindexhot&islist=&querylist=",
             };
             using (var s = new Session()) {
-                //s.HttpClientHandler.AllowAutoRedirect = true;
-                //s.HttpClientHandler.Proxy = null;
-                ////s.HttpClientHandler.AutomaticDecompression = System.Net.DecompressionMethods.None;
-                //s.HttpClientHandler.AutomaticDecompression = System.Net.DecompressionMethods.Deflate;
-                //s.HeadersUpdate(new Dictionary<string, string>()
-                //{
-                //    ["Cache-Control"] = "max-age=0",
-                //    ["Proxy-Connection"] = "keep-alive",
-                //    ["Accept-Encoding"] = "gzip, deflate",
-                //    ["Host"] = "www.gds.org.cn",
-                //    ["Upgrade-Insecure-Requests"] = "1",
-                //    ["Cookie"]= "app_id=0; COLLCK=2652728511; ASP.NET_SessionId=oedbona1bzph5w5mnk0jllhx",
-                //}) ;
-                using (var r =await s.Send(p)) {
+                using (var r =await s.SendAsync(p)) {
                     await r.SaveContentAsync(@"C:\Users\Administrator\Desktop\ll.jpg");
                     var tt = 1;
                 }
@@ -42,7 +29,7 @@ namespace HttpClientSession.Tests
 
 
             using (var h = new HttpClient()) {
-                using (var r = await h.GetAsync("http://www.gds.org.cn/CheckCodeImg.aspx")) {
+                using (var r = await h.GetAsync("http://image.baidu.com/search/detail?z=0&word=%E6%91%84%E5%BD%B1%E5%B8%88%E8%8A%A6%E7%82%B3%E8%87%A3&hs=0&pn=4&spn=0&di=0&pi=1096592873828195119&tn=baiduimagedetail&is=0%2C0&ie=utf-8&oe=utf-8&cs=4144687355%2C1909913594&os=1391503792%2C725646909&simid=&adpicid=0&lpn=0&fm=&sme=&cg=&bdtype=-1&oriquery=&objurl=http%3A%2F%2Ft8.baidu.com%2Fit%2Fu%3D2247852322%2C986532796%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D853&fromurl=&gsm=50000000005&catename=pcindexhot&islist=&querylist=")) {
                     using (FileStream fs = new FileStream(@"C:\Users\Administrator\Desktop\ll222.jpg", FileMode.Create))
                     {
                         using (var me = new MemoryStream()) {
@@ -80,7 +67,7 @@ namespace HttpClientSession.Tests
             };
             HttpStreamInfo res;
             using (var s = new Session()) {
-                using (res = await s.Send(p)) {
+                using (res = await s.SendAsync(p)) {
                     var r=await res.ReadAsStringAsync();
                     Console.WriteLine(r);
                     var l = 1;
@@ -110,7 +97,7 @@ namespace HttpClientSession.Tests
             HttpStreamInfo res;
             using (var s = new Session())
             {
-                using (res = await s.Send(p))
+                using (res = await s.SendAsync(p))
                 {
                     var r = await res.ReadAsStringAsync();
                     Console.WriteLine(r);
@@ -145,7 +132,7 @@ namespace HttpClientSession.Tests
             HttpStreamInfo res;
             using (var s = new Session())
             {
-                using (res = await s.Send(p))
+                using (res = await s.SendAsync(p))
                 {
                     var r = await res.ReadAsStringAsync();
                     Console.WriteLine(r);
@@ -169,7 +156,7 @@ namespace HttpClientSession.Tests
             };
             using (var s = new Session())
             {
-                using (var res = await s.Send(p))
+                using (var res = await s.SendAsync(p))
                 {
                     var r = await res.ReadAsStringAsync();
                     Console.WriteLine(r);
@@ -211,7 +198,7 @@ namespace HttpClientSession.Tests
             {
                 ///更新本地cookie
                 s.CookieContainerUpdate(c);
-                using (var res = await s.Send(p))
+                using (var res = await s.SendAsync(p))
                 {
                     var r = await res.ReadAsStringAsync();
                     Console.WriteLine(r);

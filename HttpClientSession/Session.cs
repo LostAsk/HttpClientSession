@@ -39,11 +39,20 @@ namespace HttpClientSession
 
         }
 
+
+
         public Session(HttpClient httpClient, HttpClientHandler httpClientHandler) {
             HttpClient = httpClient;
             HttpClientHandler = httpClientHandler;
             //HttpClientHandler.UseCookies = false;
             SetSessionCookieFromHttpClientHandler();
+        }
+
+        /// <summary>
+        /// 清楚cookiejar
+        /// </summary>
+        public void ClearCookieJar() {
+            SessionCookieContainer.Clear();
         }
 
         /// <summary>
@@ -76,6 +85,8 @@ namespace HttpClientSession
         {
             RequstsHelper.UpdateRequestHeader(HttpRequestHeaders, headers);
         }
+
+
         /// <summary>
         /// 更新sesion cookiejar
         /// </summary>
