@@ -49,7 +49,7 @@ namespace HttpClientSession
         }
 
         /// <summary>
-        /// 清楚cookiejar
+        /// 清除cookiejar
         /// </summary>
         public void ClearCookieJar() {
             SessionCookieContainer.Clear();
