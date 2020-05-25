@@ -17,7 +17,7 @@ namespace HttpClientSession.Tests
             var p = new RequestParam
             {
 
-                Url = "http://image.baidu.com/search/detail?z=0&word=%E6%91%84%E5%BD%B1%E5%B8%88%E8%8A%A6%E7%82%B3%E8%87%A3&hs=0&pn=4&spn=0&di=0&pi=1096592873828195119&tn=baiduimagedetail&is=0%2C0&ie=utf-8&oe=utf-8&cs=4144687355%2C1909913594&os=1391503792%2C725646909&simid=&adpicid=0&lpn=0&fm=&sme=&cg=&bdtype=-1&oriquery=&objurl=http%3A%2F%2Ft8.baidu.com%2Fit%2Fu%3D2247852322%2C986532796%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D853&fromurl=&gsm=50000000005&catename=pcindexhot&islist=&querylist=",
+                Url = "https://image.baidu.com/search/detail?ct=503316480&z=0&ipn=false&word=%E5%90%B4%E5%BD%A6%E7%A5%96&step_word=&hs=0&pn=0&spn=0&di=167310&pi=0&rn=1&tn=baiduimagedetail&is=0%2C0&istype=2&ie=utf-8&oe=utf-8&in=&cl=2&lm=-1&st=-1&cs=4254164563%2C3923686114&os=3469395836%2C1843962168&simid=3299881063%2C113253717&adpicid=0&lpn=0&ln=3330&fr=&fmq=1590304672285_R&fm=index&ic=0&s=undefined&hd=undefined&latest=undefined&copyright=undefined&se=&sme=&tab=0&width=&height=&face=undefined&ist=&jit=&cg=star&bdtype=0&oriquery=&objurl=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fq_mini%2Cc_zoom%2Cw_640%2Fimages%2F20170728%2F5843abd8cdb74745a2fe2349879cb055.jpeg&fromurl=ippr_z2C%24qAzdH3FAzdH3F4_z%26e3Bf5i7_z%26e3Bv54AzdH3FwAzdH3F8macld9mb_dc0nnb%3F_u%3D4-w6ptvsj_8l_ujj1f_dd&gsm=1&rpstart=0&rpnum=0&islist=&querylist=&force=undefined",
             };
             using (var s = new Session()) {
                 using (var r =await s.SendAsync(p)) {
@@ -29,7 +29,7 @@ namespace HttpClientSession.Tests
 
 
             using (var h = new HttpClient()) {
-                using (var r = await h.GetAsync("http://image.baidu.com/search/detail?z=0&word=%E6%91%84%E5%BD%B1%E5%B8%88%E8%8A%A6%E7%82%B3%E8%87%A3&hs=0&pn=4&spn=0&di=0&pi=1096592873828195119&tn=baiduimagedetail&is=0%2C0&ie=utf-8&oe=utf-8&cs=4144687355%2C1909913594&os=1391503792%2C725646909&simid=&adpicid=0&lpn=0&fm=&sme=&cg=&bdtype=-1&oriquery=&objurl=http%3A%2F%2Ft8.baidu.com%2Fit%2Fu%3D2247852322%2C986532796%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D853&fromurl=&gsm=50000000005&catename=pcindexhot&islist=&querylist=")) {
+                using (var r = await h.GetAsync("https://image.baidu.com/search/detail?ct=503316480&z=0&ipn=false&word=%E5%90%B4%E5%BD%A6%E7%A5%96&step_word=&hs=0&pn=0&spn=0&di=167310&pi=0&rn=1&tn=baiduimagedetail&is=0%2C0&istype=2&ie=utf-8&oe=utf-8&in=&cl=2&lm=-1&st=-1&cs=4254164563%2C3923686114&os=3469395836%2C1843962168&simid=3299881063%2C113253717&adpicid=0&lpn=0&ln=3330&fr=&fmq=1590304672285_R&fm=index&ic=0&s=undefined&hd=undefined&latest=undefined&copyright=undefined&se=&sme=&tab=0&width=&height=&face=undefined&ist=&jit=&cg=star&bdtype=0&oriquery=&objurl=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fq_mini%2Cc_zoom%2Cw_640%2Fimages%2F20170728%2F5843abd8cdb74745a2fe2349879cb055.jpeg&fromurl=ippr_z2C%24qAzdH3FAzdH3F4_z%26e3Bf5i7_z%26e3Bv54AzdH3FwAzdH3F8macld9mb_dc0nnb%3F_u%3D4-w6ptvsj_8l_ujj1f_dd&gsm=1&rpstart=0&rpnum=0&islist=&querylist=&force=undefined")) {
                     using (FileStream fs = new FileStream(@"C:\Users\Administrator\Desktop\ll222.jpg", FileMode.Create))
                     {
                         using (var me = new MemoryStream()) {
