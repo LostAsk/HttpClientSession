@@ -17,10 +17,10 @@ namespace HttpClientSession
         /// <param name="x"></param>
         /// <param name="num"></param>
         /// <returns></returns>
-        public static async Task<HttpStreamInfo> TryRequests(this Session s, RequestParam x, int num = 3, CancellationToken cancellationToken = default)
+        public static async Task<HttpStreamInfo> TryRequests(this Session s, RequestParam x, int num = 3,int delay=2, CancellationToken cancellationToken = default)
         {
             Func<HttpStreamInfo, bool> check = (r) => r.HttpResponseMessage.IsSuccessStatusCode == true;
-            return await TryRequests(s, x, check, num, cancellationToken);
+            return await TryRequests(s, x, check, num, delay, cancellationToken);
         }
         /// <summary>
         /// 尝试重连
@@ -30,7 +30,7 @@ namespace HttpClientSession
         /// <param name="CheckFunc">检查HTML委托</param>
         /// <param name="num"></param>
         /// <returns></returns>
-        public static async Task<HttpStreamInfo> TryRequests(this Session s, RequestParam x, Func<HttpStreamInfo, bool> CheckFunc, int num = 3,CancellationToken cancellationToken=default)
+        public static async Task<HttpStreamInfo> TryRequests(this Session s, RequestParam x, Func<HttpStreamInfo, bool> CheckFunc, int num = 3,int delay=2,CancellationToken cancellationToken=default)
         {
             Exception e = null;
             for (var i = 0; i < num; i++)
@@ -48,7 +48,7 @@ namespace HttpClientSession
                 catch (Exception ex)
                 {
                     e = ex;
-                   await Task.Delay(2000);
+                   await Task.Delay(delay*1000);
                 }
             }
             throw e;
