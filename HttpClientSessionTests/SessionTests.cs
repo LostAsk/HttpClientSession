@@ -56,7 +56,7 @@ namespace HttpClientSession.Tests
             var p = new RequestParam
             {
 
-                Url = "http://httpbin.org/post",
+                Url = "https://httpbin.org/post",
                 Headers = new Dictionary<string, string>() {
                     ["user-agent"] = "my-app/0.0.1",
                     ["Cookie"] = "a=1;b=2;c=3;d=4"
