@@ -36,7 +36,7 @@ namespace HttpClientSession
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        internal async Task CopyToAsync(CancellationToken cancellationToken = default)
+        internal async ValueTask CopyToAsync(CancellationToken cancellationToken = default)
         {
             await HttpResponseMessage.Content.CopyToAsync(Memory);
             
@@ -48,7 +48,7 @@ namespace HttpClientSession
         /// <param name="path"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task SaveContentAsync(String path, CancellationToken cancellationToken = default)
+        public async ValueTask SaveContentAsync(String path, CancellationToken cancellationToken = default)
         {
             var ResponseByte = await ReadAsByteAsync(cancellationToken);
             using (FileStream fs = new FileStream(path, FileMode.Create))
