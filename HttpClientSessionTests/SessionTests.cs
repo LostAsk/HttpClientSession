@@ -17,11 +17,11 @@ namespace HttpClientSession.Tests
             var p = new RequestParam
             {
 
-                Url = "https://image.baidu.com/search/detail?ct=503316480&z=0&ipn=false&word=%E5%90%B4%E5%BD%A6%E7%A5%96&step_word=&hs=0&pn=0&spn=0&di=167310&pi=0&rn=1&tn=baiduimagedetail&is=0%2C0&istype=2&ie=utf-8&oe=utf-8&in=&cl=2&lm=-1&st=-1&cs=4254164563%2C3923686114&os=3469395836%2C1843962168&simid=3299881063%2C113253717&adpicid=0&lpn=0&ln=3330&fr=&fmq=1590304672285_R&fm=index&ic=0&s=undefined&hd=undefined&latest=undefined&copyright=undefined&se=&sme=&tab=0&width=&height=&face=undefined&ist=&jit=&cg=star&bdtype=0&oriquery=&objurl=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fq_mini%2Cc_zoom%2Cw_640%2Fimages%2F20170728%2F5843abd8cdb74745a2fe2349879cb055.jpeg&fromurl=ippr_z2C%24qAzdH3FAzdH3F4_z%26e3Bf5i7_z%26e3Bv54AzdH3FwAzdH3F8macld9mb_dc0nnb%3F_u%3D4-w6ptvsj_8l_ujj1f_dd&gsm=1&rpstart=0&rpnum=0&islist=&querylist=&force=undefined",
+                Url = "https://www.baidu.com",
             };
             using (var s = new Session()) {
                 using (var r =await s.SendAsync(p)) {
-                    await r.SaveContentAsync(@"C:\Users\Administrator\Desktop\ll.jpg");
+                    await r.SaveContentAsync(@"C:\Users\Administrator\Desktop\ll.html");
                     var tt = 1;
                 }
             
@@ -29,8 +29,8 @@ namespace HttpClientSession.Tests
 
 
             using (var h = new HttpClient()) {
-                using (var r = await h.GetAsync("https://image.baidu.com/search/detail?ct=503316480&z=0&ipn=false&word=%E5%90%B4%E5%BD%A6%E7%A5%96&step_word=&hs=0&pn=0&spn=0&di=167310&pi=0&rn=1&tn=baiduimagedetail&is=0%2C0&istype=2&ie=utf-8&oe=utf-8&in=&cl=2&lm=-1&st=-1&cs=4254164563%2C3923686114&os=3469395836%2C1843962168&simid=3299881063%2C113253717&adpicid=0&lpn=0&ln=3330&fr=&fmq=1590304672285_R&fm=index&ic=0&s=undefined&hd=undefined&latest=undefined&copyright=undefined&se=&sme=&tab=0&width=&height=&face=undefined&ist=&jit=&cg=star&bdtype=0&oriquery=&objurl=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fq_mini%2Cc_zoom%2Cw_640%2Fimages%2F20170728%2F5843abd8cdb74745a2fe2349879cb055.jpeg&fromurl=ippr_z2C%24qAzdH3FAzdH3F4_z%26e3Bf5i7_z%26e3Bv54AzdH3FwAzdH3F8macld9mb_dc0nnb%3F_u%3D4-w6ptvsj_8l_ujj1f_dd&gsm=1&rpstart=0&rpnum=0&islist=&querylist=&force=undefined")) {
-                    using (FileStream fs = new FileStream(@"C:\Users\Administrator\Desktop\ll222.jpg", FileMode.Create))
+                using (var r = await h.GetAsync("https://www.baidu.com")) {
+                    using (FileStream fs = new FileStream(@"C:\Users\Administrator\Desktop\ll222.html", FileMode.Create))
                     {
                         using (var me = new MemoryStream()) {
                             await r.Content.CopyToAsync(me);

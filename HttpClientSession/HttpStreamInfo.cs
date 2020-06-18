@@ -19,7 +19,7 @@ namespace HttpClientSession
         public RequestParam RequestParam { get; }
 
         private byte[] ReceiveBytes { get; set; }
-        private MemoryStream Memory { get; set; } = new MemoryStream();
+        private MemoryStream Memory { get; set; } 
 
         private bool _disposed;
         static HttpStreamInfo() {
@@ -38,8 +38,10 @@ namespace HttpClientSession
         /// <returns></returns>
         internal async ValueTask CopyToAsync(CancellationToken cancellationToken = default)
         {
-            await HttpResponseMessage.Content.CopyToAsync(Memory);
-            
+            Memory = await HttpResponseMessage.Content.ReadAsStreamAsync() as MemoryStream;
+            Memory.Position = 0;
+            //await HttpResponseMessage.Content.CopyToAsync(Memory);
+            await ReadAsByteAsync(cancellationToken);
         }
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace HttpClientSession
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 //await HttpResponseMessageExtension.CopyToAsync(Memory, fs, cancellationToken);
+
                 await fs.WriteAsync(ResponseByte, 0, ResponseByte.Length);
                 await fs.FlushAsync();
             }
@@ -92,7 +95,7 @@ namespace HttpClientSession
             {
                 ReceiveBytes = new byte[Memory.Length];
                 await Memory.ReadAsync(ReceiveBytes, 0, ReceiveBytes.Length, cancellationToken);
-                await Memory.DisposeAsync();
+                //await Memory.DisposeAsync();
             }
            
             return ReceiveBytes;

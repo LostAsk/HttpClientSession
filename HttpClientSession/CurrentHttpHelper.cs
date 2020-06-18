@@ -19,7 +19,7 @@ namespace HttpClientSession
         /// <returns></returns>
         public static async Task<HttpStreamInfo> TryRequests(this Session s, RequestParam x, int num = 3,int delay=2, CancellationToken cancellationToken = default)
         {
-            Func<HttpStreamInfo, bool> check = (r) => r.HttpResponseMessage.IsSuccessStatusCode == true;
+            Func<HttpStreamInfo, ValueTask<bool>> check = (r) => new ValueTask<bool>(r.HttpResponseMessage.IsSuccessStatusCode == true);
             return await TryRequests(s, x, check, num, delay, cancellationToken);
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace HttpClientSession
         /// <param name="CheckFunc">检查HTML委托</param>
         /// <param name="num"></param>
         /// <returns></returns>
-        public static async Task<HttpStreamInfo> TryRequests(this Session s, RequestParam x, Func<HttpStreamInfo, bool> CheckFunc, int num = 3,int delay=2,CancellationToken cancellationToken=default)
+        public static async Task<HttpStreamInfo> TryRequests(this Session s, RequestParam x, Func<HttpStreamInfo,ValueTask<bool>> CheckFunc, int num = 3,int delay=2,CancellationToken cancellationToken=default)
         {
             Exception e = null;
             for (var i = 0; i < num; i++)
@@ -39,7 +39,7 @@ namespace HttpClientSession
                 {
                     using (var r =await s.SendAsync(x, cancellationToken))
                     {
-                        if (CheckFunc(r))
+                        if (await CheckFunc(r))
                         {
                             return r;
                         }
@@ -55,7 +55,7 @@ namespace HttpClientSession
         }
 
 
-        public static async Task<HttpStreamInfo[]> GetHttpResponseAsync(this Session sess,IEnumerable<RequestParam> items, Func<HttpStreamInfo, bool> CheckFunc, int current_num = 10, int delay = 1, int num =3)
+        public static async Task<HttpStreamInfo[]> GetHttpResponseAsync(this Session sess,IEnumerable<RequestParam> items, Func<HttpStreamInfo,ValueTask<bool>> CheckFunc, int current_num = 10, int delay = 1, int num =3)
         {
             using (var semaphore = new SemaphoreSlim(current_num))
             {
@@ -64,7 +64,7 @@ namespace HttpClientSession
                 var tasks = items.Select(async (item) =>
                 {
                     await semaphore.WaitAsync();
-                    await Task.Delay(rnd.Next(0, (delay * 100)));
+                   
                     try
                     {
                         Exception e = null;
@@ -74,7 +74,7 @@ namespace HttpClientSession
                             {
                                 using (var r = await s.SendAsync(item))
                                 {
-                                    if (CheckFunc(r))
+                                    if (await CheckFunc(r))
                                     {
                                         return r;
                                     }
@@ -83,7 +83,7 @@ namespace HttpClientSession
                             catch (Exception ex)
                             {
                                 e = ex;
-                                await Task.Delay(4000);
+                                await Task.Delay(rnd.Next(0, (delay * 100)));
                             }
 
                         }
