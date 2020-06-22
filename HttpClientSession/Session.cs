@@ -98,11 +98,9 @@ namespace HttpClientSession
             return CookieHelper.GetCookieString(SessionCookieContainer);
         }
 
-        public async Task<HttpStreamInfo> SendAsync(RequestParam requestParam) {
-            return await SendAsync(requestParam, new CancellationToken());
-        }
 
-        public async Task<HttpStreamInfo> SendAsync(RequestParam requestParam,CancellationToken cancellationToken)
+
+        public async Task<HttpStreamInfo> SendAsync(RequestParam requestParam,CancellationToken cancellationToken=default)
         {
             using (var httpmessage = GetHttpRequestMessage(requestParam)) {
         

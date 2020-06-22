@@ -17,32 +17,12 @@ namespace HttpClientSession.Tests
             var p = new RequestParam
             {
 
-                Url = "https://www.baidu.com",
+                Url = "http://www.weather.com.cn/weather/101290501.shtml",
             };
             using (var s = new Session()) {
                 using (var r =await s.SendAsync(p)) {
-                    await r.SaveContentAsync(@"C:\Users\Administrator\Desktop\ll.html");
+                    var html = await r.ReadAsStringAsync();
                     var tt = 1;
-                }
-            
-            }
-
-
-            using (var h = new HttpClient()) {
-                using (var r = await h.GetAsync("https://www.baidu.com")) {
-                    using (FileStream fs = new FileStream(@"C:\Users\Administrator\Desktop\ll222.html", FileMode.Create))
-                    {
-                        using (var me = new MemoryStream()) {
-                            await r.Content.CopyToAsync(me);
-                            me.Position = 0;
-                            await me.CopyToAsync(fs);
-                        }
-
-                            
-                        //await fs.WriteAsync(ReceiveBytes, 0, ReceiveBytes.Length);
-                        fs.Flush();
-                    }
-
                 }
             
             }

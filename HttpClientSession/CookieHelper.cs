@@ -68,7 +68,8 @@ namespace HttpClientSession
             {
                 var t = i.Split(";");
                 var j = t[0].Split("=");
-                tmp[j[0]] = j[1];
+
+                tmp[j[0]] = j.Length>1?j[1]:string.Empty;
 
             }
             return tmp;
