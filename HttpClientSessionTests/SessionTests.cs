@@ -17,7 +17,7 @@ namespace HttpClientSession.Tests
             var p = new RequestParam
             {
 
-                Url = "http://www.weather.com.cn/weather/101290501.shtml",
+                Url = "http://www.baidu.com",
             };
             using (var s = new Session()) {
                 using (var r =await s.SendAsync(p)) {
