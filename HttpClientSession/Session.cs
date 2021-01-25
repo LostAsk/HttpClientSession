@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text;
+
 namespace HttpClientSession
 {
 
@@ -19,6 +21,9 @@ namespace HttpClientSession
 
         public HttpRequestHeaders HttpRequestHeaders { get => HttpClient.DefaultRequestHeaders; }
 
+        static Session() {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
 
         public Session()
         {

@@ -66,8 +66,8 @@ namespace HttpClientSession
             if (!ishanscooke) return tmp;
             foreach (var i in tmp_cookie)
             {
-                var t = i.Split(";");
-                var j = t[0].Split("=");
+                var t = i.Split(';');
+                var j = t[0].Split('=');
 
                 tmp[j[0]] = j.Length>1?j[1]:string.Empty;
 

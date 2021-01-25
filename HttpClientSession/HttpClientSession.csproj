@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>1.1.4</Version>
-    <Authors>HttpClientEx</Authors>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <Version>1.1.8</Version>
+    <Authors>LostAsk</Authors>
     <PackageId>HttpClientEx</PackageId>
-    <Product>HttpClientEx</Product>
+    <Product></Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>net core session
 免责申明：只是为了帮助开发人员简化开发流程、提高开发效率，请勿使用此框架做任何违法国家法律的事情。使用者所做任何事情也与本框架的作者无关。
@@ -13,11 +13,15 @@
 添加 清除cookie功能
 
 net core版的请求插件，自定义添加请求头，cookie，以及回调等等</Description>
+    <PackageProjectUrl>https://github.com/LostAsk/HttpClientSession</PackageProjectUrl>
+    <Company />
+    <RepositoryUrl>https://github.com/LostAsk/HttpClientSession</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
   </ItemGroup>
 
 </Project>
