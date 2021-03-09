@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-    <Version>1.1.8</Version>
+    <Version>1.1.9</Version>
     <Authors>LostAsk</Authors>
     <PackageId>HttpClientEx</PackageId>
     <Product></Product>
